@@ -2,11 +2,8 @@ package com.test;
 
 import com.test.entity.CarPark;
 import com.test.entity.Command;
-import com.test.entity.Direction;
-import com.test.exception.OutOfBoundException;
 import com.test.service.Car;
 import com.test.service.impl.CarImpl;
-import org.junit.Test;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -15,9 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.Properties;
 import java.util.Scanner;
 
-import static com.test.entity.Direction.*;
-import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
+import static com.test.entity.Direction.NORTH;
 
 @Component
 public class CarTest {
@@ -39,52 +34,28 @@ public class CarTest {
         return properties.get(key);
     }
 
-    CarPark carPark = new CarPark(positionX, positionY);
 
-    private void assertCar(Car car, int x, int y, Direction direction){
-        assertEquals(direction, car.getOrientation());
-        assertEquals(x, car.getPositionX());
-        assertEquals(y, car.getPositionY());
-    }
 
-    @Test
-    public void criteriaOne() throws OutOfBoundException {
+    public static void main(String[] args) {
+        CarPark carPark = new CarPark(positionX, positionY);
         Car car = new CarImpl(1, 1, NORTH, carPark);
-        car.move(new Command(true, 0));
-        assertCar(car,1, 1, EAST);
-    }
+        Scanner sc = new Scanner(System.in);
+        sc.useDelimiter("/n");
 
-    @Test
-    public void criteriaTwo() throws OutOfBoundException {
-        Car car = new CarImpl(1, 1, NORTH, carPark);
-        car.move(new Command(false, 1));
-        assertCar(car,1, 2, NORTH);
-    }
-
-    @Test
-    public void criteriaThree() throws OutOfBoundException {
-        Car car = new CarImpl(1, 1, EAST, carPark);
-        car.move(new Command(false, 1));
-        assertCar(car,2, 1, EAST);
-    }
-
-    @Test
-    public void criteriaFour(){
-        Car car = new CarImpl(1, 1, WEST, carPark);
-        OutOfBoundException ex = null;
-        try {
-            car.move(new Command(false, 1));
-        }catch (OutOfBoundException e){
-            ex = e;
+        while (true){
+            try {
+                System.out.println("开始启动你的小汽车吧，小汽车顺时针转动，小汽车初始状态为（1,1,NORTH)，停车场大小："+positionX+"*"+positionY);
+                System.out.println("小汽车是否要转移方向（0：不转动，1转动）");
+                Boolean direct = sc.nextLine().equals("1") ? true : false;
+                System.out.println("请输入小汽车移动的步数：");
+                Integer step = Integer.valueOf(sc.nextLine());
+                Command command = new Command(direct, step);
+                car.move(command);
+                System.out.println("小汽车的位置：x=" + car.getPositionX() + ",y=" +car.getPositionY() + ",positon=" +car.getOrientation());
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
-        assertNotNull(ex);
-    }
-
-    @Test
-    public void criteriaFive() throws OutOfBoundException {
-        Car car = new CarImpl(1, 1, EAST, carPark);
-        car.move(new Command(false, 2));
-        assertCar(car,3, 1, EAST);
     }
 
 }

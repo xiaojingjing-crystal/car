@@ -5,9 +5,9 @@ import com.test.service.Car;
 public class OutOfBoundException extends Exception {
 
     public OutOfBoundException(Car car){
-        super("OutOfBoundaries at"
+        super("超出移动范围："
                 + car.getPositionX() + "/" + car.getPositionY()
-                + ", heading " + car.getOrientation().name());
+                + ", 小汽车方向 " + car.getOrientation().name());
     }
 
 }
