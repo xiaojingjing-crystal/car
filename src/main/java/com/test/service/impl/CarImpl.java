@@ -1,9 +1,13 @@
-package com.test;
+package com.test.service.impl;
 
-import com.test.etc.OutOfBoundariesException;
+import com.test.entity.CarPark;
+import com.test.exception.OutOfBoundException;
 import com.test.entity.Command;
 import com.test.entity.Direction;
+import com.test.service.Car;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CarImpl implements Car {
 
     public CarImpl(int x, int y, Direction direction, CarPark carPark) {
@@ -18,13 +22,13 @@ public class CarImpl implements Car {
     private Direction direction;
     private CarPark carPark;
 
-    public Car move(Command command) throws OutOfBoundariesException {
-        if(command.getTurn()){
+    public Car move(Command command) throws OutOfBoundException {
+        if(command.getClockWise()){
             turnClockWise();
         }
         //move
-        if(command.getMove() != null && command.getMove() > 0){
-            for (int i = 0; i < command.getMove(); i++) {
+        if(command.getStep() != null && command.getStep() > 0){
+            for (int i = 0; i < command.getStep(); i++) {
                 moveOneStep();
             }
         }
@@ -33,14 +37,14 @@ public class CarImpl implements Car {
 
     private void turnClockWise(){
         switch (direction){
-            case EAST: direction = Direction.SOUTH;break;
-            case WEST: direction = Direction.NORTH;break;
             case NORTH: direction = Direction.EAST;break;
+            case EAST: direction = Direction.SOUTH;break;
             case SOUTH: direction = Direction.WEST;break;
+            case WEST: direction = Direction.NORTH;break;
         }
     }
 
-    private void moveOneStep() throws OutOfBoundariesException {
+    private void moveOneStep() throws OutOfBoundException {
         switch (direction){
             case EAST: x++;break;
             case WEST: x--;break;
@@ -49,8 +53,9 @@ public class CarImpl implements Car {
         }
         //check
         if (x < 1 || y < 1 || x > carPark.getX() || y > carPark.getY()){
-            throw new OutOfBoundariesException(this);
+            throw new OutOfBoundException(this);
         }
+
     }
 
     public int getPositionX() {

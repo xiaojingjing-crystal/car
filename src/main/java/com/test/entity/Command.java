@@ -2,19 +2,19 @@ package com.test.entity;
 
 public class Command {
 
-    public Command(Boolean isTurn, Integer move) {
-        this.isTurn = isTurn;
-        this.move = move;
+    public Command(Boolean clockWise, Integer step) {
+        this.clockWise = clockWise;
+        this.step = step;
     }
 
-    private Boolean isTurn;
-    private Integer move;
+    private Boolean clockWise;
+    private Integer step;
 
-    public Boolean getTurn() {
-        return isTurn;
+    public Boolean getClockWise() {
+        return clockWise;
     }
 
-    public Integer getMove() {
-        return move;
+    public Integer getStep() {
+        return step;
     }
 }

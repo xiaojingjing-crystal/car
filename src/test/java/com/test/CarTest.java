@@ -1,8 +1,11 @@
 package com.test;
 
-import com.test.etc.OutOfBoundariesException;
+import com.test.entity.CarPark;
 import com.test.entity.Command;
 import com.test.entity.Direction;
+import com.test.exception.OutOfBoundException;
+import com.test.service.Car;
+import com.test.service.impl.CarImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
@@ -10,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
+import java.util.Scanner;
 
 import static com.test.entity.Direction.*;
 import static junit.framework.TestCase.assertNotNull;
@@ -29,7 +33,7 @@ public class CarTest {
             yamlFactory.setResources(resource);
             properties =  yamlFactory.getObject();
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
             return null;
         }
         return properties.get(key);
@@ -44,21 +48,21 @@ public class CarTest {
     }
 
     @Test
-    public void criteriaOne() throws OutOfBoundariesException {
+    public void criteriaOne() throws OutOfBoundException {
         Car car = new CarImpl(1, 1, NORTH, carPark);
         car.move(new Command(true, 0));
         assertCar(car,1, 1, EAST);
     }
 
     @Test
-    public void criteriaTwo() throws OutOfBoundariesException {
+    public void criteriaTwo() throws OutOfBoundException {
         Car car = new CarImpl(1, 1, NORTH, carPark);
         car.move(new Command(false, 1));
         assertCar(car,1, 2, NORTH);
     }
 
     @Test
-    public void criteriaThree() throws OutOfBoundariesException {
+    public void criteriaThree() throws OutOfBoundException {
         Car car = new CarImpl(1, 1, EAST, carPark);
         car.move(new Command(false, 1));
         assertCar(car,2, 1, EAST);
@@ -67,17 +71,17 @@ public class CarTest {
     @Test
     public void criteriaFour(){
         Car car = new CarImpl(1, 1, WEST, carPark);
-        OutOfBoundariesException ex = null;
+        OutOfBoundException ex = null;
         try {
             car.move(new Command(false, 1));
-        }catch (OutOfBoundariesException e){
+        }catch (OutOfBoundException e){
             ex = e;
         }
         assertNotNull(ex);
     }
 
     @Test
-    public void criteriaFive() throws OutOfBoundariesException {
+    public void criteriaFive() throws OutOfBoundException {
         Car car = new CarImpl(1, 1, EAST, carPark);
         car.move(new Command(false, 2));
         assertCar(car,3, 1, EAST);
